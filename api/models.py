@@ -1,5 +1,25 @@
-from django.contrib.auth.models import Group, User
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+# from django.contrib.auth.models import User
+
+
+class User(AbstractUser):
+    pass
+
+
+class Editor(User):
+
+    class Meta:
+        verbose_name = 'Editor'
+        verbose_name_plural = 'Editors'
+
+
+class Adopter(User):
+
+    class Meta:
+        verbose_name = 'Adopter'
+        verbose_name_plural = 'Adopters'
+
 
 class Pet(models.Model):
     SEX_CHOICES = (
@@ -49,26 +69,6 @@ class PetImage(models.Model):
             blank=False, null=False)
 
 
-class Adopter(User):
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Adopter'
-        verbose_name_plural = 'Adopters'
-
-
-class Manager(User):
-
-    def __str__(self):
-        return self.username
-
-    class Meta:
-        verbose_name = 'Manager'
-        verbose_name_plural = 'Managers'
-
-
 PROVINCE_CHOICES = (
     ("Araba", "Araba"), ("Albacete", "Albacete"), ("Alicante", "Alicante"), ("Almería", "Almería"),
     ("Asturias", "Asturias"), ("Ávila", "Ávila"), ("Badajoz", "Badajoz"), ("Barcelona", "Barcelona"),
@@ -86,13 +86,15 @@ PROVINCE_CHOICES = (
 )
 
 
-class Association(Group):
+class Association(models.Model):
+    name = models.CharField(max_length=100)
     location = models.CharField(max_length=100, choices=PROVINCE_CHOICES)
     website = models.CharField(max_length=100, blank=True, null=True)
     twitter = models.CharField(max_length=100, blank=True, null=True)
     email = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
-    managers = models.ManyToManyField(Manager, related_name="associations")
+    editors = models.ManyToManyField('Editor', related_name='associations')
 
     def __str__(self):
         return self.name
+
