@@ -116,7 +116,7 @@ class Question(models.Model):
 class Answer(models.Model):
     text = models.CharField(max_length=250)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
-    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='answers')
+    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, blank=True, null=True, related_name='answers')
 
     def __str__(self):
         return self.text
