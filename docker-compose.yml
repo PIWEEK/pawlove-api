@@ -33,12 +33,12 @@ services:
     pawlove_front:
         image: pawlove_front:1.0
         depends_on:
-          - pawlove_back
+          - pawlove_api
         container_name: pawlove_front
         ports:
             - "9002:9002"
         volumes:
-            - data-static:/pawlove-back/static
+            - data-static:/pawlove-api/static
         networks:
             - pawlove_network
 
