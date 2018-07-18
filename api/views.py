@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from api.models import Pet, Association, Editor
-from api.serializers import PetSerializer, AssociationSerializer, EditorSerializer
+from api.serializers import PetSerializer, AssociationSerializer
 
 
 class PetViewSet(viewsets.ReadOnlyModelViewSet):
@@ -18,10 +18,3 @@ class AssociationViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Association.objects.all()
     serializer_class = AssociationSerializer
 
-
-class EditorViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `detail` actions.
-    """
-    queryset = Editor.objects.all()
-    serializer_class = EditorSerializer
