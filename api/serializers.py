@@ -59,7 +59,7 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        exclude = ('tag', )
+        exclude = ('tag', 'question')
 
 
 class QuestionSerializer(serializers.ModelSerializer):
