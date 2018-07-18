@@ -11,16 +11,22 @@ from django.contrib.auth.forms import (
     UsernameField
 )
 
-from api.models import (Association, Pet, PetImage, User, Editor, Adopter)
+from api.models import (Association, Pet, PetImage, User, Editor, Adopter, Tag)
 
 
 class ImageInline(admin.TabularInline):
     model = PetImage
 
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    pass
 
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
     list_display = ('name', 'race')
+    formfield_overrides = {
+        models.ManyToManyField: {'widget': FilteredSelectMultiple("Etiquetas", is_stacked=False)},
+    }
     inlines = [
         ImageInline,
     ]

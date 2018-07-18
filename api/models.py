@@ -20,6 +20,11 @@ class Adopter(User):
         verbose_name = 'Adopter'
         verbose_name_plural = 'Adopters'
 
+class Tag(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class Pet(models.Model):
     SEX_CHOICES = (
@@ -47,6 +52,7 @@ class Pet(models.Model):
     personality_2 = models.TextField(blank=True, null=True)
     personality_joke = models.TextField(blank=True, null=True)
     association = models.ForeignKey('Association', on_delete=models.CASCADE, related_name='pets')
+    tags = models.ManyToManyField(Tag, related_name='pets')
 
     def __str__(self):
         return self.name
