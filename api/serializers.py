@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Pet, Association, Editor, PetImage, Tag
+from api.models import Pet, Association, Editor, PetImage, Tag, Question, Answer
 
 
 class AssociationSerializer(serializers.HyperlinkedModelSerializer):
@@ -55,4 +55,16 @@ class PetSerializer(serializers.HyperlinkedModelSerializer):
         fields = '__all__'
 
 
+class AnswerSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Answer
+        exclude = ('tag', )
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    answers = AnswerSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Question
+        fields = '__all__'

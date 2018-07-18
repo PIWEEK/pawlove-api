@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-# from django.contrib.auth.models import User
 
 
 class User(AbstractUser):
@@ -20,11 +19,13 @@ class Adopter(User):
         verbose_name = 'Adopter'
         verbose_name_plural = 'Adopters'
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
 
 class Pet(models.Model):
     SEX_CHOICES = (
@@ -104,3 +105,18 @@ class Association(models.Model):
     def __str__(self):
         return self.name
 
+
+class Question(models.Model):
+    text = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.text
+
+
+class Answer(models.Model):
+    text = models.CharField(max_length=250)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='answers')
+
+    def __str__(self):
+        return self.text

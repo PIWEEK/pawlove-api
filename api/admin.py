@@ -11,7 +11,7 @@ from django.contrib.auth.forms import (
     UsernameField
 )
 
-from api.models import (Association, Pet, PetImage, User, Editor, Adopter, Tag)
+from api.models import (Association, Pet, PetImage, User, Editor, Adopter, Tag, Answer, Question)
 
 
 class ImageInline(admin.TabularInline):
@@ -84,3 +84,14 @@ class AdopterAdmin(DjangoUserAdmin):
     def save_model(self, request, obj, form, change):
         obj.is_staff = False
         super().save_model(request, obj, form, change)
+
+
+class AnswerInline(admin.TabularInline):
+    model = Answer
+
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    inlines = [
+        AnswerInline,
+    ]
