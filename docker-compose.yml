@@ -18,6 +18,7 @@ services:
         container_name: pawlove_api
         volumes:
             - data-static:/pawlove-api/static
+            - data-media:/pawlove-api/media
         networks:
             - pawlove_network
         depends_on:
@@ -49,6 +50,8 @@ networks:
 
 volumes:
     data-static:
+        driver: local
+    data-media:
         driver: local
     db-data:
         driver: local
