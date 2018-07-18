@@ -32,7 +32,6 @@ class AssociationAdmin(admin.ModelAdmin):
         models.ManyToManyField: {'widget': FilteredSelectMultiple("Editores", is_stacked=False)},
     }
     fieldsets = (
-        (None, {"fields": ("name", )}),
         ("Información general", {"fields": ("name", "location", "description")}),
         ("Contacto", {"fields": ("website", "twitter", "email")}),
         ("Editores", {"fields": ("editors",)})
