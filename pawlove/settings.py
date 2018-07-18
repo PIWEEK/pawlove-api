@@ -13,9 +13,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 
 
-DEBUG = os.environ.get('PAWLOVE_DEBUG', 'True')
-
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,6 +24,9 @@ SECRET_KEY = '=zkmr07n!_kf@l+kfg!bt1b-2lj#-d@*^^)jkbn!b5kw_3x3rz'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+debug = os.environ.get('PAWLOVE_DEBUG', True)
+if debug == 'False':
+    DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -85,7 +85,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'pawlove',
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'localhost')
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432')
     }
 }
 
