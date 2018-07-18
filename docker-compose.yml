@@ -30,18 +30,18 @@ services:
             - "9001:9001"
         command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn -b 0.0.0.0:9001 --access-logfile - --error-logfile - pawlove.wsgi:application"
 
-        #     pawlove_front:
-        #         image: pawlove_front:1.0
-        #         depends_on:
-        #           - pawlove_back
-        #         container_name: pawlove_front
-        #         ports:
-        #             - "9000:9000"
-        #         volumes:
-        #             - data-static:/pawlove-back/static
-        #         networks:
-        #             - pawlove_network
-        #
+    pawlove_front:
+        image: pawlove_front:1.0
+        depends_on:
+          - pawlove_back
+        container_name: pawlove_front
+        ports:
+            - "9002:9002"
+        volumes:
+            - data-static:/pawlove-back/static
+        networks:
+            - pawlove_network
+
 
 networks:
     pawlove_network:
