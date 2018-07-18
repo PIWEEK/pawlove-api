@@ -14,20 +14,26 @@ class AssociationSerializer(serializers.HyperlinkedModelSerializer):
         exclude = ('editors',)
 
 class SummaryAssociationSerializer(serializers.HyperlinkedModelSerializer):
-    
+
     class Meta:
         model = Association
         exclude = ('editors',)
 
-class PetImageSerializer(serializers.HyperlinkedModelSerializer):
-    
+class PetImageSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        """Convert `dict` to element."""
+        ret = super().to_representation(instance)
+        ret = ret['image']
+        return ret
+
     class Meta:
         model = PetImage
-        fields = '__all__'
+        fields = ('image',)
 
 class PetSerializer(serializers.HyperlinkedModelSerializer):
-    association = SummaryAssociationSerializer(read_only=True)    
-    #images = PetImageSerializer(read_only=True, many=True)
+    association = SummaryAssociationSerializer(read_only=True)
+    images = PetImageSerializer(read_only=True, many=True)
 
     class Meta:
         model = Pet
