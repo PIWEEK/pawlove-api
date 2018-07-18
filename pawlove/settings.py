@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 
 import os
 
+
+DEBUG = os.environ.get('PAWLOVE_DEBUG', 'True')
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -81,8 +84,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'pawlove',
-        'USER': 'postgres',
-        'HOST': 'localhost'
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost')
     }
 }
 
@@ -131,4 +134,3 @@ AUTH_USER_MODEL = 'api.User'
 #     'DEFAULT_PAGINATION_CLASS': 'quotes.pagination.QuotesPagination',
 #     'PAGE_SIZE': 8
 # }
-

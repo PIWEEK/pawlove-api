@@ -1,0 +1,56 @@
+version: "3"
+
+services:
+    pawlove_db:
+        image: postgres:10.1
+        container_name: pawlove_db
+        environment:
+            - "POSTGRES_DB=pawlove"
+        networks:
+            - pawlove_network
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        ports:
+            - "5433:5432"
+
+    pawlove_api:
+        image: pawlove_api:1.0
+        container_name: pawlove_api
+        volumes:
+            - data-static:/pawlove-api/static
+        networks:
+            - pawlove_network
+        depends_on:
+          - pawlove_db
+        environment:
+          - "POSTGRES_HOST=pawlove_db"
+          - "POSTGRES_USER=postgres"
+          - "PAWLOVE_DEBUG=False"
+        ports:
+            - "9001:9001"
+        command: bash -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn -b 0.0.0.0:9001 --access-logfile - --error-logfile - pawlove.wsgi:application"
+
+        #     pawlove_front:
+        #         image: pawlove_front:1.0
+        #         depends_on:
+        #           - pawlove_back
+        #         container_name: pawlove_front
+        #         ports:
+        #             - "9000:9000"
+        #         volumes:
+        #             - data-static:/pawlove-back/static
+        #         networks:
+        #             - pawlove_network
+        #
+
+networks:
+    pawlove_network:
+        driver: bridge
+
+volumes:
+    data-static:
+        driver: local
+    db-data:
+        driver: local
+
+
