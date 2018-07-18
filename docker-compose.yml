@@ -40,6 +40,7 @@ services:
             - "9002:9002"
         volumes:
             - data-static:/pawlove-api/static
+            - data-media:/pawlove-api/media
         networks:
             - pawlove_network
 
