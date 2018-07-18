@@ -1,4 +1,3 @@
-FROM ubuntu:17.10
 FROM python:3.6-jessie
 LABEL maintainer="Kaleidos hello@kaleidos.net"
 WORKDIR /
