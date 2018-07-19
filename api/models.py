@@ -14,7 +14,7 @@ class Editor(User):
 
 
 class Adopter(User):
-    
+
     class Meta:
         verbose_name = 'Adopter'
         verbose_name_plural = 'Adopters'
@@ -27,14 +27,16 @@ class Tag(models.Model):
         return self.name
 
 
+SPECIE_CHOICES = (
+    ('P', 'Perro'),
+    ('G', 'Gato'),
+)
+
+
 class Pet(models.Model):
     SEX_CHOICES = (
         ('M', 'Macho'),
         ('H', 'Hembra'),
-    )
-    SPECIE_CHOICES = (
-        ('P', 'Perro'),
-        ('G', 'Gato'),
     )
     SIZE_CHOICES = (
         ('P', 'Pequeño'),
@@ -120,6 +122,7 @@ class Answer(models.Model):
     text = models.CharField(max_length=250)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, blank=True, null=True, related_name='answers')
+    specie = models.CharField(max_length=1, choices=SPECIE_CHOICES, blank=True, null=True)
 
     def __str__(self):
         return self.text

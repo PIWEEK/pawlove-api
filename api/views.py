@@ -22,7 +22,10 @@ class PetViewSet(viewsets.ReadOnlyModelViewSet):
             for answer_id in answers:
                 answer = Answer.objects.filter(id=answer_id).first()
                 if answer and answer.tag:
-                    return [answer.tag.pets.all().order_by('?').first()]
+                    result = [answer.tag.pets.all().order_by('?').first()]
+                    if result:
+                        return result
+
             return [queryset.order_by('?').first()]
 
         return queryset
