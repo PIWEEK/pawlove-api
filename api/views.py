@@ -17,7 +17,8 @@ class PetViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = self.queryset
 
         if 'answers' in self.request.query_params:
-            answers = shuffle(self.request.query_params['answers'].split(','))
+            answers = self.request.query_params['answers'].split(',')
+            shuffle(answers)
             for answer_id in answers:
                 answer = Answer.objects.filter(id=answer_id).first()
                 if answer and answer.tag:
