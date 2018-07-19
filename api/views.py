@@ -19,12 +19,25 @@ class PetViewSet(viewsets.ReadOnlyModelViewSet):
         if 'answers' in self.request.query_params:
             answers = self.request.query_params['answers'].split(',')
             shuffle(answers)
+            tags = []
+            species = []
             for answer_id in answers:
                 answer = Answer.objects.filter(id=answer_id).first()
-                if answer and answer.tag:
-                    result = [answer.tag.pets.all().order_by('?').first()]
-                    if result:
-                        return result
+                if answer:
+                    if answer.tag:
+                        tags.append(answer.tag)
+                    if answer.specie:
+                        species.append(answer.specie)
+
+            species = list(set(species))
+            if len(species) == 1: # las respuestas indican "PERRO XOR GATO"
+                queryset = queryset.filter(specie=species[0])
+
+            tags = list(set(tags))
+            # if answer and answer.tag:
+            #     result = [answer.tag.pets.all().order_by('?').first()]
+            #     if result:
+            #         return result
 
             return [queryset.order_by('?').first()]
 
