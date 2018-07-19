@@ -1,3 +1,5 @@
+from random import shuffle
+
 from rest_framework import viewsets
 
 from api.models import Pet, Association, Editor, Question, Answer, Tag
@@ -15,7 +17,7 @@ class PetViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = self.queryset
 
         if 'answers' in self.request.query_params:
-            answers = self.request.query_params['answers'].split(',')
+            answers = shuffle(self.request.query_params['answers'].split(','))
             for answer_id in answers:
                 answer = Answer.objects.filter(id=answer_id).first()
                 if answer and answer.tag:
