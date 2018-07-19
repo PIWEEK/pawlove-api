@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import Pet, Association, Editor, PetImage, Tag, Question, Answer
+from api.models import Pet, Association, Editor, PetImage, Tag, Question, Answer, Adopter
 
 
 class AssociationSerializer(serializers.HyperlinkedModelSerializer):
@@ -45,11 +45,34 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ('name',)
 
 
+class AdopterSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Adopter
+        fields = ('first_name', 'last_name', 'url')
+
+
+class SummaryPetSerializer(serializers.HyperlinkedModelSerializer):
+    
+    class Meta:
+        model = Pet
+        fields = ('url', 'name')
+
+
+class CompleteAdopterSerializer(serializers.HyperlinkedModelSerializer):
+    following = SummaryPetSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Adopter
+        fields = ('first_name', 'last_name', 'url', 'following')
+
+
 class PetSerializer(serializers.HyperlinkedModelSerializer):
     association = SummaryAssociationSerializer(read_only=True)
     images = PetImageSerializer(read_only=True, many=True)
     tags = TagSerializer(read_only=True, many=True)
-
+    followers = AdopterSerializer(read_only=True, many=True)
+    
     class Meta:
         model = Pet
         fields = '__all__'

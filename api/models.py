@@ -14,7 +14,7 @@ class Editor(User):
 
 
 class Adopter(User):
-
+    
     class Meta:
         verbose_name = 'Adopter'
         verbose_name_plural = 'Adopters'
@@ -54,6 +54,8 @@ class Pet(models.Model):
     personality_joke = models.TextField(blank=True, null=True)
     association = models.ForeignKey('Association', on_delete=models.CASCADE, related_name='pets')
     tags = models.ManyToManyField(Tag, related_name='pets')
+    adopted = models.BooleanField(default=False)
+    followers = models.ManyToManyField(Adopter, related_name='following')
 
     def __str__(self):
         return self.name
@@ -101,6 +103,7 @@ class Association(models.Model):
     email = models.CharField(max_length=100, blank=False, null=False)
     description = models.TextField(blank=True, null=True)
     editors = models.ManyToManyField('Editor', related_name='associations')
+    logo = models.ImageField(upload_to='uploads', blank=True, null=True)
 
     def __str__(self):
         return self.name

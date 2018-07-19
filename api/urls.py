@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register(r'pets', views.PetViewSet)
 router.register(r'associations', views.AssociationViewSet)
 router.register(r'questions', views.QuestionViewSet)
+router.register(r'adopters', views.AdopterViewSet)
 
 # The API URLs are now determined automatically by the router.
 # Additionally, we include the login URLs for the browsable API.

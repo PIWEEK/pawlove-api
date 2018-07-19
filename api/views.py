@@ -2,8 +2,8 @@ from random import shuffle
 
 from rest_framework import viewsets
 
-from api.models import Pet, Association, Editor, Question, Answer, Tag
-from api.serializers import PetSerializer, AssociationSerializer, QuestionSerializer
+from api.models import Pet, Association, Editor, Question, Answer, Tag, Adopter
+from api.serializers import PetSerializer, AssociationSerializer, QuestionSerializer, CompleteAdopterSerializer
 
 
 class PetViewSet(viewsets.ReadOnlyModelViewSet):
@@ -38,3 +38,8 @@ class AssociationViewSet(viewsets.ReadOnlyModelViewSet):
 class QuestionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+
+
+class AdopterViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Adopter.objects.all()
+    serializer_class = CompleteAdopterSerializer
