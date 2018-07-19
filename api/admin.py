@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.db import models
-from django.forms import SelectMultiple
+from django.forms import SelectMultiple, EmailField
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
@@ -14,16 +14,35 @@ from django.contrib.auth.forms import (
 from api.models import (Association, Pet, PetImage, User, Editor, Adopter, Tag, Answer, Question)
 
 
-class ImageInline(admin.TabularInline):
-    model = PetImage
+class UserCreationForm(DjangoUserCreationForm):
+
+    class Meta:
+        model = User
+        fields = '__all__'
+
+
+class UserChangeForm(DjangoUserChangeForm):
+
+    class Meta:
+        model = User
+        fields = "__all__"
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     pass
 
+
+class ImageInline(admin.TabularInline):
+    model = PetImage
+
+
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
+    queryset = Pet.objects.all()
     list_display = ('name', 'race')
+    exclude = ('followers',)
+    readonly_fields = ('association',)
     formfield_overrides = {
         models.ManyToManyField: {'widget': FilteredSelectMultiple("Etiquetas", is_stacked=False)},
     }
@@ -31,9 +50,18 @@ class PetAdmin(admin.ModelAdmin):
         ImageInline,
     ]
 
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return self.queryset
+
+        associations = Editor.objects.get(id=request.user.id).associations.all()
+        pets = Pet.objects.filter(association__in=associations).distinct()
+        return pets
+
 
 @admin.register(Association)
 class AssociationAdmin(admin.ModelAdmin):
+    queryset = Association.objects.all()
     formfield_overrides = {
         models.ManyToManyField: {'widget': FilteredSelectMultiple("Editores", is_stacked=False)},
     }
@@ -43,37 +71,52 @@ class AssociationAdmin(admin.ModelAdmin):
         ("Editores", {"fields": ("editors",)})
     )
 
-    #def formfield_for_manytomany(self, db_field, request, **kwargs):
-    #    if db_field.name == "editors":
-    #        if '/change' in request.path:
-    #            association_id = request.path.split("/")[4]
-    #            kwargs["queryset"] = Editor.objects.filter(associations__in=[association_id])
-    #    return super().formfield_for_manytomany(db_field, request, **kwargs)
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return self.queryset
+
+        associations = Editor.objects.get(id=request.user.id).associations.all()
+        return associations
 
 
-class UserCreationForm(DjangoUserCreationForm):
-    class Meta:
-        model = User
-        fields = ("username",)
-        field_classes = {"username": UsernameField}
-
-
-class UserChangeForm(DjangoUserChangeForm):
-    class Meta:
-        model = User
-        fields = "__all__"
-        field_classes = {"username": UsernameField}
+class AssociationInline(admin.TabularInline):
+    model = Association
 
 
 @admin.register(Editor)
 class EditorAdmin(DjangoUserAdmin):
+    queryset = Editor.objects.all()
     form = UserChangeForm
     add_form = UserCreationForm
+
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return ()
+
+        return ("is_active", "is_staff", "is_superuser", "groups", "user_permissions",
+                "last_login", "date_joined")
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return self.queryset
+
+        associations = Editor.objects.get(id=request.user.id).associations.all()
+        editors = Editor.objects.filter(associations__in=associations).distinct()
+        return editors
 
 
     def save_model(self, request, obj, form, change):
         obj.is_staff = True
         super().save_model(request, obj, form, change)
+        permissions = []
+        perm_names = ['Can change association', 'Can add Editor', 'Can change Editor', 'Can delete Editor',
+                 'Can add pet', 'Can change pet', 'Can delete pet', 'Can add pet image',
+                 'Can change pet image', 'Can delete pet image']
+        for perm_name in perm_names:
+           perm = Permission.objects.get(name=perm_name)
+           permissions.append(perm)
+
+        obj.user_permissions.set(permissions)
 
 
 @admin.register(Adopter)
