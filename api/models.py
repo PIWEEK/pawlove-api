@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -67,7 +69,7 @@ class Pet(models.Model):
 
     @property
     def age(self):
-        now = datetime.datetime.now
+        now = datetime.datetime.now()
         dob = self.birth_date
         age = now.year - dob.year - ((now.month, now.day) < (dob.month, dob.day))
         return age

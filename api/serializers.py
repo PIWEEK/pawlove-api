@@ -53,7 +53,7 @@ class AdopterSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class SummaryPetSerializer(serializers.HyperlinkedModelSerializer):
-    
+
     class Meta:
         model = Pet
         fields = ('url', 'name')
@@ -72,7 +72,11 @@ class PetSerializer(serializers.HyperlinkedModelSerializer):
     images = PetImageSerializer(read_only=True, many=True)
     tags = TagSerializer(read_only=True, many=True)
     followers = AdopterSerializer(read_only=True, many=True)
-    
+    age = serializers.SerializerMethodField()
+
+    def get_age(self, obj):
+        return obj.age
+
     class Meta:
         model = Pet
         fields = '__all__'
