@@ -1,5 +1,4 @@
-from random import shuffle
-
+from django.db.models import Count
 from rest_framework import viewsets
 
 from api.models import Pet, Association, Editor, Question, Answer, Tag, Adopter
@@ -18,14 +17,13 @@ class PetViewSet(viewsets.ReadOnlyModelViewSet):
 
         if 'answers' in self.request.query_params:
             answers = self.request.query_params['answers'].split(',')
-            shuffle(answers)
             tags = []
             species = []
             for answer_id in answers:
                 answer = Answer.objects.filter(id=answer_id).first()
                 if answer:
                     if answer.tag:
-                        tags.append(answer.tag)
+                        tags.append(answer.tag.id)
                     if answer.specie:
                         species.append(answer.specie)
 
@@ -33,13 +31,14 @@ class PetViewSet(viewsets.ReadOnlyModelViewSet):
             if len(species) == 1: # las respuestas indican "PERRO XOR GATO"
                 queryset = queryset.filter(specie=species[0])
 
-            tags = list(set(tags))
-            # if answer and answer.tag:
-            #     result = [answer.tag.pets.all().order_by('?').first()]
-            #     if result:
-            #         return result
+            tags_ids = list(set(tags))
+            if len(tags_ids) != 0:
+                queryset = queryset.filter(tags__in=tags_ids).annotate(num_tags=Count('id')).order_by('-num_tags')
 
-            return [queryset.order_by('?').first()]
+            if len(queryset) > 0:
+                return [queryset.first()]
+
+            return [self.queryset.order_by('?').first()]
 
         return queryset
 
