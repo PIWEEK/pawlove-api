@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django.db.models import Count
 from rest_framework import viewsets
 
@@ -27,9 +29,14 @@ class PetViewSet(viewsets.ReadOnlyModelViewSet):
                     if answer.specie:
                         species.append(answer.specie)
 
-            species = list(set(species))
-            if len(species) == 1: # las respuestas indican "PERRO XOR GATO"
+            counter_species = Counter(species)
+            if len(counter_species) == 1: # las respuestas indican "PERRO XOR GATO"
                 queryset = queryset.filter(specie=species[0])
+            elif len(counter_species) == 2: # las respuestas indican "PERRO OR GATO" - los ordenamos
+                if counter_species['P'] > counter_species['G']:
+                    queryset = queryset.filter(specie='P')
+                elif counter_species['G'] > counter_species['P']:
+                    queryset = queryset.filter(specie='G')
 
             tags_ids = list(set(tags))
             if len(tags_ids) != 0:
