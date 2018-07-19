@@ -19,6 +19,7 @@ class PetViewSet(viewsets.ReadOnlyModelViewSet):
 
         if 'answers' in self.request.query_params:
             answers = self.request.query_params['answers'].split(',')
+            answers = [x for x in answers if x != '']
             tags = []
             species = []
             for answer_id in answers:
