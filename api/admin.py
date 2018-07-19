@@ -42,7 +42,6 @@ class PetAdmin(admin.ModelAdmin):
     queryset = Pet.objects.all()
     list_display = ('name', 'race')
     exclude = ('followers',)
-    readonly_fields = ('association',)
     formfield_overrides = {
         models.ManyToManyField: {'widget': FilteredSelectMultiple("Etiquetas", is_stacked=False)},
     }
