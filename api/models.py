@@ -81,6 +81,9 @@ class PetImage(models.Model):
     image = models.ImageField(upload_to='uploads',
             blank=False, null=False)
 
+    class Meta:
+        ordering = ('id',)
+
 
 PROVINCE_CHOICES = (
     ("Araba", "Araba"), ("Albacete", "Albacete"), ("Alicante", "Alicante"), ("Almería", "Almería"),
