@@ -51,7 +51,10 @@ class PetAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "association":
-            kwargs["queryset"] = Association.objects.filter(editors__in=[request.user])
+            if request.user.is_superuser:
+                kwargs["queryset"] = Association.objects.all()
+            else:
+                kwargs["queryset"] = Association.objects.filter(editors__in=[request.user])
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
